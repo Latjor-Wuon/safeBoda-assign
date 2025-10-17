@@ -48,6 +48,7 @@ LOCAL_APPS = [
     'notifications',
     'government',
     'analytics',
+    'testing_framework',
     'monitoring',
 ]
 

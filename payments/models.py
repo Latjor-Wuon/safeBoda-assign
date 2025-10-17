@@ -43,6 +43,72 @@ class PaymentMethod(models.Model):
         unique_together = ['user', 'provider', 'phone_number']
 
 
+class Payment(models.Model):
+    """
+    Payment records for rides and services
+    """
+    PAYMENT_METHOD_CHOICES = (
+        ('mtn_momo', 'MTN Mobile Money'),
+        ('airtel_money', 'Airtel Money'),
+        ('cash', 'Cash'),
+        ('bank_card', 'Bank Card'),
+    )
+    
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('processing', 'Processing'),
+        ('completed', 'Completed'),
+        ('failed', 'Failed'),
+        ('cancelled', 'Cancelled'),
+        ('refunded', 'Refunded'),
+    )
+    
+    PAYMENT_TYPE_CHOICES = (
+        ('payment', 'Payment'),
+        ('refund', 'Refund'),
+        ('fee', 'Fee'),
+        ('commission', 'Commission'),
+    )
+    
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    ride = models.ForeignKey('bookings.Ride', on_delete=models.CASCADE, related_name='payments', null=True, blank=True)
+    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments')
+    
+    # Payment details
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES)
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    currency = models.CharField(max_length=3, default='RWF')
+    
+    # Mobile money details
+    momo_phone_number = models.CharField(max_length=15, blank=True, null=True)
+    
+    # Transaction tracking
+    external_transaction_id = models.CharField(max_length=100, blank=True, null=True)
+    provider_response = models.JSONField(default=dict, blank=True)
+    
+    # Status and timing
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    payment_type = models.CharField(max_length=20, choices=PAYMENT_TYPE_CHOICES, default='payment')
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    processed_at = models.DateTimeField(null=True, blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    failed_at = models.DateTimeField(null=True, blank=True)
+    
+    class Meta:
+        db_table = 'payments'
+        indexes = [
+            models.Index(fields=['customer', 'status']),
+            models.Index(fields=['payment_method', 'status']),
+            models.Index(fields=['external_transaction_id']),
+            models.Index(fields=['created_at']),
+        ]
+    
+    def __str__(self):
+        return f"Payment #{self.id} - {self.amount} {self.currency} ({self.payment_method})"
+
+
 class Transaction(models.Model):
     """
     All payment transactions for rides and other services

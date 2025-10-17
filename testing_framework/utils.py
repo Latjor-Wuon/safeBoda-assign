@@ -8,12 +8,42 @@ from datetime import datetime, timedelta
 from decimal import Decimal
 from django.contrib.auth import get_user_model
 from django.utils import timezone
-from authentication.models import DriverProfile, VerificationCode
-from bookings.models import Ride, RideLocation
-from payments.models import Payment, Transaction
-from notifications.models import Notification, NotificationTemplate, NotificationPreference
-from government.models import RTDALicense, ComplianceReport
-from analytics.models import RideAnalytics, DriverMetrics
+try:
+    from authentication.models import DriverProfile, VerificationCode
+except ImportError:
+    DriverProfile = None
+    VerificationCode = None
+
+try:
+    from bookings.models import Ride, RideLocation
+except ImportError:
+    Ride = None
+    RideLocation = None
+
+try:
+    from payments.models import Payment, Transaction
+except ImportError:
+    Payment = None
+    Transaction = None
+
+try:
+    from notifications.models import Notification, NotificationTemplate, NotificationPreference
+except ImportError:
+    Notification = None
+    NotificationTemplate = None
+    NotificationPreference = None
+
+try:
+    from government.models import RTDALicense, ComplianceReport
+except ImportError:
+    RTDALicense = None
+    ComplianceReport = None
+
+try:
+    from analytics.models import RideAnalytics, DriverMetrics
+except ImportError:
+    RideAnalytics = None
+    DriverMetrics = None
 
 User = get_user_model()
 

@@ -17,6 +17,7 @@ api_v1_patterns = [
     path('government/', include('government.urls')),
     path('analytics/', include('analytics.urls')),
     path('monitoring/', include('monitoring.urls')),
+    # path('testing/', include('testing_framework.urls')),  # Temporarily disabled
 ]
 
 urlpatterns = [
