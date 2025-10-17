@@ -71,6 +71,7 @@ class BookingsViewsTests(APITestCase):
         self.client = APIClient()
         # Create a test user
         self.user = User.objects.create_user(
+            username='testuser',
             email='test@example.com',
             password='testpass123',
             first_name='Test',
