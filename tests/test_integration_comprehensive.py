@@ -3,7 +3,7 @@ Comprehensive integration tests for SafeBoda Rwanda platform
 Testing complete user workflows and system interactions for RTDA compliance
 """
 
-import pytest
+
 from decimal import Decimal
 from datetime import datetime, timedelta, date
 from django.test import TestCase, TransactionTestCase

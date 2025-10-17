@@ -3,7 +3,7 @@ Comprehensive unit tests for SafeBoda Rwanda notification system
 Achieving 90%+ code coverage for RTDA compliance
 """
 
-import pytest
+
 from decimal import Decimal
 from datetime import datetime, timedelta
 from unittest.mock import Mock, patch, MagicMock

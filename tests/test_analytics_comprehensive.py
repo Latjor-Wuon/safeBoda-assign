@@ -3,7 +3,6 @@ Comprehensive unit tests for SafeBoda Rwanda analytics system
 Achieving 90%+ code coverage for RTDA compliance
 """
 
-import pytest
 from decimal import Decimal
 from datetime import datetime, timedelta, date
 from unittest.mock import Mock, patch, MagicMock
@@ -15,15 +14,11 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 
 from analytics.models import (
-    RideMetrics, UserBehaviorMetrics, RevenueMetrics, PerformanceMetrics,
-    GeographicMetrics, SafetyMetrics, ComplianceReport
+    AnalyticsReport, RideMetrics, DriverPerformanceMetrics, PopularRoute, CustomerInsight
 )
-from analytics.services import (
-    AnalyticsService, MetricsCalculationService, ReportGenerationService,
-    RTDAComplianceService, DataAggregationService
-)
+from analytics.services import AnalyticsService
 from analytics.serializers import (
-    RideMetricsSerializer, UserBehaviorMetricsSerializer, RevenueMetricsSerializer,
+    AnalyticsReportSerializer, RideMetricsSerializer, DriverPerformanceMetricsSerializer
     PerformanceMetricsSerializer, ComplianceReportSerializer
 )
 from testing_framework.utils import TestDataFactory, TestAssertions
