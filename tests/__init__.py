@@ -123,6 +123,11 @@ TEST_RIDE_DATA = {
     'destination_latitude': -1.9706,
     'destination_longitude': 30.1044,
     'destination_address': 'Kigali International Airport',
-    'ride_type': 'standard',
-    'passenger_count': 1,
+    'ride_type': 'boda',
+    'estimated_distance': 5.2,
+    'estimated_duration': 20,
+    'base_fare': 1500.00,
+    'distance_fare': 1000.00,
+    'total_fare': 2500.00,
+    'payment_method': 'mtn_momo',
 }

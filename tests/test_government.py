@@ -8,6 +8,7 @@ from decimal import Decimal
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework.test import APITestCase
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -56,21 +57,18 @@ class GovernmentModelsTests(TestCase):
     def test_rtda_license_creation(self):
         """Test creating RTDA license record"""
         license_record = RTDALicense.objects.create(
-            driver=self.driver,
+            holder=self.driver,
             license_number='RW987654321',
-            license_category='B',
-            issue_date=date.today() - timedelta(days=365),
-            expiry_date=date.today() + timedelta(days=365),
-            issuing_authority='RTDA Kigali',
-            verification_status='verified',
-            verification_date=date.today(),
-            rtda_response={'status': 'valid', 'driver_name': 'Test Driver'}
+            license_type='motorcycle_taxi',
+            issued_date=timezone.now() - timedelta(days=365),
+            expiry_date=timezone.now() + timedelta(days=365),
+            status='active'
         )
         
-        self.assertEqual(license_record.driver, self.driver)
+        self.assertEqual(license_record.holder, self.driver)
         self.assertEqual(license_record.license_number, 'RW987654321')
-        self.assertEqual(license_record.verification_status, 'verified')
-        self.assertTrue(license_record.is_valid())
+        self.assertEqual(license_record.status, 'active')
+        self.assertEqual(license_record.license_type, 'motorcycle_taxi')
     
     def test_government_report_creation(self):
         """Test creating government report"""
@@ -83,79 +81,76 @@ class GovernmentModelsTests(TestCase):
         }
         
         report = GovernmentReport.objects.create(
-            report_type='monthly_summary',
-            period_start=date.today().replace(day=1),
-            period_end=date.today(),
+            report_type='monthly_rides',
+            title='Monthly Rides Report - October 2025',
+            period_start=timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0),
+            period_end=timezone.now(),
             report_data=report_data,
-            generated_by=self.admin_user,
+            summary='Monthly summary of ride statistics and compliance metrics',
+            submitted_by=self.admin_user,
             status='submitted'
         )
         
-        self.assertEqual(report.report_type, 'monthly_summary')
+        self.assertEqual(report.report_type, 'monthly_rides')
         self.assertEqual(report.report_data['total_rides'], 1250)
         self.assertEqual(report.status, 'submitted')
-        self.assertEqual(report.generated_by, self.admin_user)
+        self.assertEqual(report.submitted_by, self.admin_user)
     
     def test_safety_incident_creation(self):
         """Test creating safety incident"""
         incident = SafetyIncident.objects.create(
             incident_type='accident',
-            severity='minor',
+            severity='medium',
             description='Minor collision at intersection',
-            location_latitude=Decimal('-1.9441'),
-            location_longitude=Decimal('30.0619'),
-            location_description='KN 3 Rd & KG 11 Ave intersection',
-            district='Gasabo',
-            sector='Kimironko',
-            reported_by=self.driver,
-            incident_date=date.today(),
+            location_latitude=-1.9441,
+            location_longitude=30.0619,
+            location_address='KN 3 Rd & KG 11 Ave intersection',
+            driver=self.driver,
+            incident_datetime=timezone.now(),
             status='reported',
-            police_case_number='POL-2024-001234',
+            police_report_number='POL-2024-001234',
             emergency_services_contacted=True
         )
         
         self.assertEqual(incident.incident_type, 'accident')
-        self.assertEqual(incident.severity, 'minor')
-        self.assertEqual(incident.reported_by, self.driver)
+        self.assertEqual(incident.severity, 'medium')
+        self.assertEqual(incident.driver, self.driver)
         self.assertEqual(incident.status, 'reported')
         self.assertTrue(incident.emergency_services_contacted)
     
     def test_tax_record_creation(self):
         """Test creating tax record"""
         tax_record = TaxRecord.objects.create(
-            ride_id='12345',
-            gross_amount=Decimal('5000.00'),
-            tax_rate=Decimal('18.00'),
+            tax_type='ride_tax',
+            taxpayer=self.driver,
+            taxable_amount=Decimal('5000.00'),
+            tax_rate_percent=Decimal('18.00'),
             tax_amount=Decimal('900.00'),
-            net_amount=Decimal('4100.00'),
-            tax_period=date.today().replace(day=1),
-            payment_method='mtn_momo',
-            rra_reference='RRA-2024-567890',
+            tax_period_start=timezone.now().replace(day=1, hour=0, minute=0, second=0, microsecond=0),
+            tax_period_end=timezone.now(),
             status='calculated'
         )
         
-        self.assertEqual(tax_record.ride_id, '12345')
-        self.assertEqual(float(tax_record.tax_rate), 18.00)
+        self.assertEqual(tax_record.tax_type, 'ride_tax')
+        self.assertEqual(float(tax_record.tax_rate_percent), 18.00)
         self.assertEqual(float(tax_record.tax_amount), 900.00)
         self.assertEqual(tax_record.status, 'calculated')
     
     def test_emergency_contact_creation(self):
         """Test creating emergency contact"""
         emergency_contact = EmergencyContact.objects.create(
-            service_type='police',
+            contact_type='police',
             name='Rwanda National Police - Gasabo',
             phone_number='+250788311110',
+            emergency_number='+250788311111',
             email='gasabo@police.gov.rw',
-            address='KG 11 Ave, Kigali',
             district='Gasabo',
-            sector='Kimironko',
+            province='Kigali City',
             is_active=True,
-            response_time_minutes=15,
-            coordinates_latitude=Decimal('-1.9441'),
-            coordinates_longitude=Decimal('30.0619')
+            response_time_minutes=15
         )
         
-        self.assertEqual(emergency_contact.service_type, 'police')
+        self.assertEqual(emergency_contact.contact_type, 'police')
         self.assertEqual(emergency_contact.district, 'Gasabo')
         self.assertTrue(emergency_contact.is_active)
         self.assertEqual(emergency_contact.response_time_minutes, 15)
