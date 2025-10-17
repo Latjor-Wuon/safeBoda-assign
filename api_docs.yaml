@@ -1,0 +1,3873 @@
+openapi: 3.0.3
+info:
+  title: SafeBoda Rwanda API
+  version: 1.0.0
+  description: Comprehensive ride-booking platform API for Rwanda
+paths:
+  /api/auth/register/:
+    post:
+      operationId: auth_register_create
+      description: Register a new customer or driver account with Rwanda-specific
+        validation
+      summary: Register new user
+      tags:
+      - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistrationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRegistrationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRegistrationRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRegistration'
+          description: ''
+  /api/auth/login/:
+    post:
+      operationId: auth_login_create
+      description: Authenticate user and return JWT tokens with user information
+      summary: User login
+      tags:
+      - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+        required: true
+      responses:
+        '200':
+          description: No response body
+  /api/auth/logout/:
+    post:
+      operationId: auth_logout_create
+      description: Logout user and blacklist refresh token
+      summary: Logout user
+      tags:
+      - Authentication
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/auth/refresh/:
+    post:
+      operationId: auth_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/auth/profile/:
+    get:
+      operationId: auth_profile_retrieve
+      description: Retrieve current user's profile information
+      summary: Get user profile
+      tags:
+      - Authentication
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    put:
+      operationId: auth_profile_update
+      description: Update current user's profile information
+      summary: Update user profile
+      tags:
+      - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfileRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    patch:
+      operationId: auth_profile_partial_update
+      description: Partially update current user's profile information
+      summary: Partially update user profile
+      tags:
+      - Authentication
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfileRequest'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /api/auth/driver/profile/:
+    get:
+      operationId: auth_driver_profile_retrieve
+      description: Retrieve driver profile with vehicle information
+      summary: Get driver profile
+      tags:
+      - Authentication
+      - Drivers
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverProfile'
+          description: ''
+    put:
+      operationId: auth_driver_profile_update
+      description: Update driver profile and vehicle information
+      summary: Update driver profile
+      tags:
+      - Authentication
+      - Drivers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DriverProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DriverProfileRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverProfile'
+          description: ''
+    patch:
+      operationId: auth_driver_profile_partial_update
+      description: Driver profile management
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDriverProfileRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDriverProfileRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDriverProfileRequest'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverProfile'
+          description: ''
+  /api/auth/verify/:
+    post:
+      operationId: auth_verify_create
+      description: Verify phone number or email with verification code
+      summary: Verify phone or email
+      tags:
+      - Authentication
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/auth/resend-code/:
+    post:
+      operationId: auth_resend_code_create
+      description: Resend verification code for phone or email
+      summary: Resend verification code
+      tags:
+      - Authentication
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/auth/password/reset/:
+    post:
+      operationId: auth_password_reset_create
+      description: Request password reset code via email
+      summary: Request password reset
+      tags:
+      - Authentication
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/auth/password/confirm/:
+    post:
+      operationId: auth_password_confirm_create
+      description: Reset password with verification code
+      summary: Confirm password reset
+      tags:
+      - Authentication
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/auth/password/change/:
+    post:
+      operationId: auth_password_change_create
+      description: Change password for authenticated user
+      summary: Change password
+      tags:
+      - Authentication
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/bookings/create/:
+    post:
+      operationId: bookings_create_create
+      description: Create a new ride booking with pickup and destination details
+      summary: Create new ride booking
+      tags:
+      - Bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RideCreateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RideCreateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RideCreateRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RideCreate'
+          description: ''
+  /api/bookings/{id}/:
+    get:
+      operationId: bookings_retrieve
+      description: Retrieve detailed information about a specific ride
+      summary: Get ride details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Bookings
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ride'
+          description: ''
+  /api/bookings/{id}/status/:
+    put:
+      operationId: bookings_status_update
+      description: Update ride status (driver arrival, start, completion, etc.)
+      summary: Update booking status
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RideStatusUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RideStatusUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RideStatusUpdateRequest'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RideStatusUpdate'
+          description: ''
+    patch:
+      operationId: bookings_status_partial_update
+      description: PUT /api/bookings/{id}/status/ - Update booking status
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - bookings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRideStatusUpdateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRideStatusUpdateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRideStatusUpdateRequest'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RideStatusUpdate'
+          description: ''
+  /api/bookings/{id}/cancel/:
+    post:
+      operationId: bookings_cancel_create
+      description: Cancel a ride booking with reason
+      summary: Cancel booking
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Bookings
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/bookings/active/:
+    get:
+      operationId: bookings_active_list
+      description: Retrieve all active bookings for the current user
+      summary: Get active bookings
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Bookings
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRideListList'
+          description: ''
+  /api/bookings/{id}/rate/:
+    post:
+      operationId: bookings_rate_create
+      description: Rate and provide feedback for completed ride
+      summary: Rate completed ride
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Bookings
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/bookings/{id}/location/:
+    post:
+      operationId: bookings_location_create
+      description: Update real-time location during active ride (driver only)
+      summary: Update location during ride
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - Bookings
+      - Real-time
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/bookings/history/:
+    get:
+      operationId: bookings_history_list
+      description: Get paginated list of user's ride history
+      summary: Get ride history
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - Bookings
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRideListList'
+          description: ''
+  /api/notifications/:
+    get:
+      operationId: notifications_list
+      description: Retrieve notifications for the authenticated user
+      summary: Get user notifications
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNotificationList'
+          description: ''
+  /api/notifications/{notification_id}/read/:
+    post:
+      operationId: notifications_read_create
+      description: Mark a specific notification as read by the user
+      summary: Mark notification as read
+      parameters:
+      - in: path
+        name: notification_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/notifications/preferences/:
+    get:
+      operationId: notifications_preferences_retrieve
+      description: Get user's notification preferences
+      summary: Get notification preferences
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPreference'
+          description: ''
+    put:
+      operationId: notifications_preferences_update
+      description: Update user's notification preferences
+      summary: Update notification preferences
+      tags:
+      - notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationPreferenceRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NotificationPreferenceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NotificationPreferenceRequest'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPreference'
+          description: ''
+    patch:
+      operationId: notifications_preferences_partial_update
+      description: Manage user notification preferences
+      tags:
+      - notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationPreferenceRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationPreferenceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationPreferenceRequest'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPreference'
+          description: ''
+  /api/notifications/send/:
+    post:
+      operationId: notifications_send_create
+      description: Send notification to a user (Admin only)
+      summary: Send notification
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/notifications/templates/:
+    get:
+      operationId: notifications_templates_list
+      description: List all notification templates (Admin only)
+      summary: List notification templates
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNotificationTemplateList'
+          description: ''
+    post:
+      operationId: notifications_templates_create
+      description: Create new notification template (Admin only)
+      summary: Create notification template
+      tags:
+      - notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationTemplateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NotificationTemplateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NotificationTemplateRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationTemplate'
+          description: ''
+  /api/notifications/templates/{id}/:
+    get:
+      operationId: notifications_templates_retrieve
+      description: Get notification template details (Admin only)
+      summary: Get notification template
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationTemplate'
+          description: ''
+    put:
+      operationId: notifications_templates_update
+      description: Update notification template (Admin only)
+      summary: Update notification template
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationTemplateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/NotificationTemplateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/NotificationTemplateRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationTemplate'
+          description: ''
+    patch:
+      operationId: notifications_templates_partial_update
+      description: Manage individual notification template (Admin only)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - notifications
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationTemplateRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationTemplateRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationTemplateRequest'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationTemplate'
+          description: ''
+    delete:
+      operationId: notifications_templates_destroy
+      description: Delete notification template (Admin only)
+      summary: Delete notification template
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/notifications/stats/:
+    get:
+      operationId: notifications_stats_retrieve
+      description: Get notification system statistics (Admin only)
+      summary: Get notification statistics
+      tags:
+      - notifications
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/government/rtda/license/verify/:
+    post:
+      operationId: government_rtda_license_verify_create
+      description: Verify driver license against RTDA database for compliance
+      summary: Verify driver license with RTDA
+      tags:
+      - government
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/government/rtda/vehicle/verify/:
+    post:
+      operationId: government_rtda_vehicle_verify_create
+      description: Verify vehicle registration with RTDA database
+      summary: Verify vehicle registration
+      tags:
+      - government
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/government/rtda/compliance/{driver_id}/:
+    get:
+      operationId: government_rtda_compliance_retrieve
+      description: Check overall compliance status for a driver with RTDA requirements
+      summary: Check driver compliance status
+      parameters:
+      - in: path
+        name: driver_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - government
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/government/rtda/licenses/:
+    get:
+      operationId: government_rtda_licenses_list
+      description: List all RTDA licenses (Admin only)
+      summary: List RTDA licenses
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - government
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRTDALicenseList'
+          description: ''
+    post:
+      operationId: government_rtda_licenses_create
+      description: Create new RTDA license record (Admin only)
+      summary: Create RTDA license
+      tags:
+      - government
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RTDALicenseRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RTDALicenseRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RTDALicenseRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RTDALicense'
+          description: ''
+  /api/government/rtda/licenses/{id}/:
+    get:
+      operationId: government_rtda_licenses_retrieve
+      description: Get RTDA license details (Admin only)
+      summary: Get RTDA license details
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - government
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RTDALicense'
+          description: ''
+    put:
+      operationId: government_rtda_licenses_update
+      description: Update RTDA license (Admin only)
+      summary: Update RTDA license
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - government
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RTDALicenseRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RTDALicenseRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RTDALicenseRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RTDALicense'
+          description: ''
+    patch:
+      operationId: government_rtda_licenses_partial_update
+      description: Manage individual RTDA license (Admin only)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - government
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRTDALicenseRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRTDALicenseRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRTDALicenseRequest'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RTDALicense'
+          description: ''
+    delete:
+      operationId: government_rtda_licenses_destroy
+      description: Delete RTDA license (Admin only)
+      summary: Delete RTDA license
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - government
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/government/tax/calculate/:
+    post:
+      operationId: government_tax_calculate_create
+      description: Calculate income tax for a driver over a specific period (Admin
+        only)
+      summary: Calculate driver income tax
+      tags:
+      - government
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/government/tax/records/:
+    get:
+      operationId: government_tax_records_list
+      description: List all tax records (Admin only)
+      summary: List tax records
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - government
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTaxRecordList'
+          description: ''
+  /api/government/reports/generate/:
+    post:
+      operationId: government_reports_generate_create
+      description: Generate monthly report for government submission (Admin only)
+      summary: Generate monthly government report
+      tags:
+      - government
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/government/reports/submit/:
+    post:
+      operationId: government_reports_submit_create
+      description: Submit generated report to government authorities (Admin only)
+      summary: Submit report to government
+      tags:
+      - government
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/government/reports/:
+    get:
+      operationId: government_reports_list
+      description: List all government reports (Admin only)
+      summary: List government reports
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - government
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedGovernmentReportList'
+          description: ''
+  /api/government/safety/incidents/:
+    get:
+      operationId: government_safety_incidents_list
+      description: List safety incidents for compliance reporting
+      summary: List safety incidents
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - government
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSafetyIncidentList'
+          description: ''
+    post:
+      operationId: government_safety_incidents_create
+      description: Create new safety incident report
+      summary: Create safety incident report
+      tags:
+      - government
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SafetyIncidentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SafetyIncidentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SafetyIncidentRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SafetyIncident'
+          description: ''
+  /api/government/emergency/report/:
+    post:
+      operationId: government_emergency_report_create
+      description: Report safety incident to emergency services
+      summary: Report emergency incident
+      tags:
+      - government
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/government/emergency/services/:
+    get:
+      operationId: government_emergency_services_retrieve
+      description: Get nearest emergency services for a location
+      summary: Get emergency services
+      tags:
+      - government
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/government/emergency/contacts/:
+    get:
+      operationId: government_emergency_contacts_list
+      description: List all emergency service contacts
+      summary: List emergency contacts
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - government
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEmergencyContactList'
+          description: ''
+  /api/analytics/ride-summary/:
+    get:
+      operationId: analytics_ride_summary_retrieve
+      description: Get ride summary analytics for specified date range
+      parameters:
+      - in: query
+        name: end_date
+        schema:
+          type: string
+          format: date
+        description: End date (YYYY-MM-DD)
+      - in: query
+        name: start_date
+        schema:
+          type: string
+          format: date
+        description: Start date (YYYY-MM-DD)
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/analytics/revenue/:
+    get:
+      operationId: analytics_revenue_retrieve
+      description: Get revenue analytics for specified date range
+      parameters:
+      - in: query
+        name: end_date
+        schema:
+          type: string
+          format: date
+        description: End date (YYYY-MM-DD)
+      - in: query
+        name: start_date
+        schema:
+          type: string
+          format: date
+        description: Start date (YYYY-MM-DD)
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/analytics/driver-performance/:
+    get:
+      operationId: analytics_driver_performance_retrieve
+      description: Get driver performance analytics
+      parameters:
+      - in: query
+        name: driver_id
+        schema:
+          type: string
+        description: Specific driver UUID (optional)
+      - in: query
+        name: end_date
+        schema:
+          type: string
+          format: date
+        description: End date (YYYY-MM-DD)
+      - in: query
+        name: start_date
+        schema:
+          type: string
+          format: date
+        description: Start date (YYYY-MM-DD)
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/analytics/popular-routes/:
+    get:
+      operationId: analytics_popular_routes_retrieve
+      description: Get popular routes analytics
+      parameters:
+      - in: query
+        name: limit
+        schema:
+          type: integer
+        description: 'Number of routes to return (1-50, default: 20)'
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/analytics/customer-insights/:
+    get:
+      operationId: analytics_customer_insights_retrieve
+      description: Get customer insights analytics
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/analytics/time-patterns/:
+    get:
+      operationId: analytics_time_patterns_retrieve
+      description: Get time patterns analytics
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/analytics/generate-report/:
+    post:
+      operationId: analytics_generate_report_create
+      description: Generate analytics report
+      tags:
+      - analytics
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportGenerationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ReportGenerationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ReportGenerationRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsReport'
+          description: ''
+  /api/analytics/reports/:
+    get:
+      operationId: analytics_reports_list
+      description: |-
+        List all analytics reports
+        GET /api/analytics/reports/
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAnalyticsReportList'
+          description: ''
+  /api/analytics/reports/{id}/:
+    get:
+      operationId: analytics_reports_retrieve
+      description: |-
+        Get specific analytics report
+        GET /api/analytics/reports/{id}/
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsReport'
+          description: ''
+  /api/analytics/dashboard/:
+    get:
+      operationId: analytics_dashboard_retrieve
+      description: |-
+        Get dashboard overview with key metrics
+        GET /api/analytics/dashboard/
+      tags:
+      - analytics
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+components:
+  schemas:
+    AnalyticsReport:
+      type: object
+      description: Serializer for analytics reports
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        report_type:
+          $ref: '#/components/schemas/AnalyticsReportReportTypeEnum'
+        title:
+          type: string
+          maxLength: 200
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        data: {}
+        metadata: {}
+        generated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        generated_by:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        generated_by_name:
+          type: string
+          readOnly: true
+      required:
+      - data
+      - end_date
+      - generated_at
+      - generated_by
+      - generated_by_name
+      - id
+      - report_type
+      - start_date
+      - title
+    AnalyticsReportReportTypeEnum:
+      enum:
+      - ride_summary
+      - revenue_report
+      - driver_performance
+      - customer_insights
+      - popular_routes
+      - time_patterns
+      type: string
+      description: |-
+        * `ride_summary` - Ride Summary
+        * `revenue_report` - Revenue Report
+        * `driver_performance` - Driver Performance
+        * `customer_insights` - Customer Insights
+        * `popular_routes` - Popular Routes
+        * `time_patterns` - Time Patterns
+    BlankEnum:
+      enum:
+      - ''
+    ContactTypeEnum:
+      enum:
+      - police
+      - medical
+      - fire
+      - rtda
+      - safeboda
+      type: string
+      description: |-
+        * `police` - Rwanda National Police
+        * `medical` - Emergency Medical Services
+        * `fire` - Fire and Rescue Services
+        * `rtda` - RTDA Emergency Line
+        * `safeboda` - SafeBoda Emergency Support
+    DriverProfile:
+      type: object
+      description: Driver profile serializer with vehicle and license information
+      properties:
+        user:
+          allOf:
+          - $ref: '#/components/schemas/UserProfile'
+          readOnly: true
+        license_number:
+          type: string
+          pattern: ^[A-Z0-9]{8,20}$
+          maxLength: 20
+        license_expiry_date:
+          type: string
+          format: date
+        license_category:
+          type: string
+          maxLength: 10
+        vehicle_type:
+          $ref: '#/components/schemas/VehicleTypeEnum'
+        vehicle_plate_number:
+          type: string
+          pattern: ^R[A-Z]{2}\s?\d{3}[A-Z]$
+          maxLength: 10
+        vehicle_make:
+          type: string
+          maxLength: 50
+        vehicle_model:
+          type: string
+          maxLength: 50
+        vehicle_year:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        vehicle_color:
+          type: string
+          maxLength: 30
+        insurance_number:
+          type: string
+          maxLength: 50
+        insurance_expiry_date:
+          type: string
+          format: date
+        vehicle_inspection_date:
+          type: string
+          format: date
+        vehicle_inspection_expiry:
+          type: string
+          format: date
+        status:
+          allOf:
+          - $ref: '#/components/schemas/DriverProfileStatusEnum'
+          readOnly: true
+        rating:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,2})?$
+          readOnly: true
+        total_rides:
+          type: integer
+          readOnly: true
+        total_earnings:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+        is_online:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        approved_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - approved_at
+      - created_at
+      - insurance_expiry_date
+      - insurance_number
+      - license_category
+      - license_expiry_date
+      - license_number
+      - rating
+      - status
+      - total_earnings
+      - total_rides
+      - user
+      - vehicle_color
+      - vehicle_inspection_date
+      - vehicle_inspection_expiry
+      - vehicle_make
+      - vehicle_model
+      - vehicle_plate_number
+      - vehicle_type
+      - vehicle_year
+    DriverProfileRequest:
+      type: object
+      description: Driver profile serializer with vehicle and license information
+      properties:
+        license_number:
+          type: string
+          minLength: 1
+          pattern: ^[A-Z0-9]{8,20}$
+          maxLength: 20
+        license_expiry_date:
+          type: string
+          format: date
+        license_category:
+          type: string
+          minLength: 1
+          maxLength: 10
+        vehicle_type:
+          $ref: '#/components/schemas/VehicleTypeEnum'
+        vehicle_plate_number:
+          type: string
+          minLength: 1
+          pattern: ^R[A-Z]{2}\s?\d{3}[A-Z]$
+          maxLength: 10
+        vehicle_make:
+          type: string
+          minLength: 1
+          maxLength: 50
+        vehicle_model:
+          type: string
+          minLength: 1
+          maxLength: 50
+        vehicle_year:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        vehicle_color:
+          type: string
+          minLength: 1
+          maxLength: 30
+        insurance_number:
+          type: string
+          minLength: 1
+          maxLength: 50
+        insurance_expiry_date:
+          type: string
+          format: date
+        vehicle_inspection_date:
+          type: string
+          format: date
+        vehicle_inspection_expiry:
+          type: string
+          format: date
+        is_online:
+          type: boolean
+      required:
+      - insurance_expiry_date
+      - insurance_number
+      - license_category
+      - license_expiry_date
+      - license_number
+      - vehicle_color
+      - vehicle_inspection_date
+      - vehicle_inspection_expiry
+      - vehicle_make
+      - vehicle_model
+      - vehicle_plate_number
+      - vehicle_type
+      - vehicle_year
+    DriverProfileStatusEnum:
+      enum:
+      - pending
+      - approved
+      - suspended
+      - rejected
+      type: string
+      description: |-
+        * `pending` - Pending Verification
+        * `approved` - Approved
+        * `suspended` - Suspended
+        * `rejected` - Rejected
+    EmergencyContact:
+      type: object
+      description: Serializer for emergency contacts
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        contact_type:
+          $ref: '#/components/schemas/ContactTypeEnum'
+        name:
+          type: string
+          maxLength: 100
+        phone_number:
+          type: string
+          maxLength: 15
+        emergency_number:
+          type: string
+          maxLength: 15
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        province:
+          type: string
+          maxLength: 50
+        district:
+          type: string
+          maxLength: 50
+        operating_hours:
+          type: string
+          maxLength: 100
+        response_time_minutes:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: Average response time in minutes
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - contact_type
+      - created_at
+      - emergency_number
+      - id
+      - name
+      - phone_number
+      - response_time_minutes
+      - updated_at
+    GenderEnum:
+      enum:
+      - M
+      - F
+      - O
+      type: string
+      description: |-
+        * `M` - Male
+        * `F` - Female
+        * `O` - Other
+    GovernmentReport:
+      type: object
+      description: Serializer for government reports
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        report_type:
+          $ref: '#/components/schemas/GovernmentReportReportTypeEnum'
+        title:
+          type: string
+          maxLength: 200
+        period_start:
+          type: string
+          format: date-time
+        period_end:
+          type: string
+          format: date-time
+        report_data:
+          description: Structured report data
+        summary:
+          type: string
+        status:
+          $ref: '#/components/schemas/GovernmentReportStatusEnum'
+        submitted_at:
+          type: string
+          format: date-time
+          nullable: true
+        submitted_by:
+          type: string
+          format: uuid
+          nullable: true
+        submitted_by_name:
+          type: string
+          readOnly: true
+        government_reference:
+          type: string
+          maxLength: 100
+        government_feedback:
+          type: string
+        report_file_url:
+          type: string
+          format: uri
+          maxLength: 200
+        supporting_documents: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - period_end
+      - period_start
+      - report_data
+      - report_type
+      - submitted_by_name
+      - summary
+      - title
+      - updated_at
+    GovernmentReportReportTypeEnum:
+      enum:
+      - monthly_rides
+      - tax_collection
+      - driver_compliance
+      - safety_incidents
+      - revenue_summary
+      - vehicle_inspection
+      type: string
+      description: |-
+        * `monthly_rides` - Monthly Rides Report
+        * `tax_collection` - Tax Collection Report
+        * `driver_compliance` - Driver Compliance Report
+        * `safety_incidents` - Safety Incidents Report
+        * `revenue_summary` - Revenue Summary Report
+        * `vehicle_inspection` - Vehicle Inspection Report
+    GovernmentReportStatusEnum:
+      enum:
+      - draft
+      - pending_review
+      - submitted
+      - approved
+      - rejected
+      type: string
+      description: |-
+        * `draft` - Draft
+        * `pending_review` - Pending Review
+        * `submitted` - Submitted to Government
+        * `approved` - Approved
+        * `rejected` - Rejected
+    IncidentTypeEnum:
+      enum:
+      - accident
+      - theft
+      - harassment
+      - vehicle_breakdown
+      - medical_emergency
+      - other
+      type: string
+      description: |-
+        * `accident` - Traffic Accident
+        * `theft` - Theft or Robbery
+        * `harassment` - Driver/Customer Harassment
+        * `vehicle_breakdown` - Vehicle Breakdown
+        * `medical_emergency` - Medical Emergency
+        * `other` - Other Safety Incident
+    LanguagePreferenceEnum:
+      enum:
+      - en
+      - rw
+      - fr
+      type: string
+      description: |-
+        * `en` - English
+        * `rw` - Kinyarwanda
+        * `fr` - French
+    LicenseTypeEnum:
+      enum:
+      - motorcycle_taxi
+      - commercial_transport
+      - driving_school
+      - vehicle_inspection
+      type: string
+      description: |-
+        * `motorcycle_taxi` - Motorcycle Taxi License
+        * `commercial_transport` - Commercial Transport License
+        * `driving_school` - Driving School License
+        * `vehicle_inspection` - Vehicle Inspection License
+    Notification:
+      type: object
+      description: Serializer for notifications
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        template_name:
+          type: string
+          readOnly: true
+        recipient_email:
+          type: string
+          format: email
+          readOnly: true
+        subject:
+          type: string
+          maxLength: 200
+        body:
+          type: string
+        status:
+          $ref: '#/components/schemas/NotificationStatusEnum'
+        priority:
+          $ref: '#/components/schemas/PriorityEnum'
+        sent_at:
+          type: string
+          format: date-time
+          nullable: true
+        delivered_at:
+          type: string
+          format: date-time
+          nullable: true
+        read_at:
+          type: string
+          format: date-time
+          nullable: true
+        failure_reason:
+          type: string
+        retry_count:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - body
+      - created_at
+      - id
+      - recipient_email
+      - template_name
+    NotificationPreference:
+      type: object
+      description: Serializer for user notification preferences
+      properties:
+        enable_sms:
+          type: boolean
+        enable_email:
+          type: boolean
+        enable_push:
+          type: boolean
+        enable_in_app:
+          type: boolean
+        ride_updates:
+          type: boolean
+        payment_notifications:
+          type: boolean
+        promotional_messages:
+          type: boolean
+        security_alerts:
+          type: boolean
+        quiet_hours_start:
+          type: string
+          format: time
+          nullable: true
+        quiet_hours_end:
+          type: string
+          format: time
+          nullable: true
+    NotificationPreferenceRequest:
+      type: object
+      description: Serializer for user notification preferences
+      properties:
+        enable_sms:
+          type: boolean
+        enable_email:
+          type: boolean
+        enable_push:
+          type: boolean
+        enable_in_app:
+          type: boolean
+        ride_updates:
+          type: boolean
+        payment_notifications:
+          type: boolean
+        promotional_messages:
+          type: boolean
+        security_alerts:
+          type: boolean
+        quiet_hours_start:
+          type: string
+          format: time
+          nullable: true
+        quiet_hours_end:
+          type: string
+          format: time
+          nullable: true
+    NotificationStatusEnum:
+      enum:
+      - pending
+      - sent
+      - failed
+      - delivered
+      - read
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `sent` - Sent
+        * `failed` - Failed
+        * `delivered` - Delivered
+        * `read` - Read
+    NotificationTemplate:
+      type: object
+      description: Serializer for notification templates
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        notification_type:
+          $ref: '#/components/schemas/NotificationTypeEnum'
+        subject_template:
+          type: string
+          maxLength: 200
+        body_template:
+          type: string
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - body_template
+      - created_at
+      - id
+      - name
+      - notification_type
+      - updated_at
+    NotificationTemplateRequest:
+      type: object
+      description: Serializer for notification templates
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        notification_type:
+          $ref: '#/components/schemas/NotificationTypeEnum'
+        subject_template:
+          type: string
+          maxLength: 200
+        body_template:
+          type: string
+          minLength: 1
+        is_active:
+          type: boolean
+      required:
+      - body_template
+      - name
+      - notification_type
+    NotificationTypeEnum:
+      enum:
+      - sms
+      - email
+      - push
+      - in_app
+      type: string
+      description: |-
+        * `sms` - SMS
+        * `email` - Email
+        * `push` - Push Notification
+        * `in_app` - In-App Notification
+    PaginatedAnalyticsReportList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnalyticsReport'
+    PaginatedEmergencyContactList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmergencyContact'
+    PaginatedGovernmentReportList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/GovernmentReport'
+    PaginatedNotificationList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+    PaginatedNotificationTemplateList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotificationTemplate'
+    PaginatedRTDALicenseList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RTDALicense'
+    PaginatedRideListList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RideList'
+    PaginatedSafetyIncidentList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SafetyIncident'
+    PaginatedTaxRecordList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaxRecord'
+    PatchedDriverProfileRequest:
+      type: object
+      description: Driver profile serializer with vehicle and license information
+      properties:
+        license_number:
+          type: string
+          minLength: 1
+          pattern: ^[A-Z0-9]{8,20}$
+          maxLength: 20
+        license_expiry_date:
+          type: string
+          format: date
+        license_category:
+          type: string
+          minLength: 1
+          maxLength: 10
+        vehicle_type:
+          $ref: '#/components/schemas/VehicleTypeEnum'
+        vehicle_plate_number:
+          type: string
+          minLength: 1
+          pattern: ^R[A-Z]{2}\s?\d{3}[A-Z]$
+          maxLength: 10
+        vehicle_make:
+          type: string
+          minLength: 1
+          maxLength: 50
+        vehicle_model:
+          type: string
+          minLength: 1
+          maxLength: 50
+        vehicle_year:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        vehicle_color:
+          type: string
+          minLength: 1
+          maxLength: 30
+        insurance_number:
+          type: string
+          minLength: 1
+          maxLength: 50
+        insurance_expiry_date:
+          type: string
+          format: date
+        vehicle_inspection_date:
+          type: string
+          format: date
+        vehicle_inspection_expiry:
+          type: string
+          format: date
+        is_online:
+          type: boolean
+    PatchedNotificationPreferenceRequest:
+      type: object
+      description: Serializer for user notification preferences
+      properties:
+        enable_sms:
+          type: boolean
+        enable_email:
+          type: boolean
+        enable_push:
+          type: boolean
+        enable_in_app:
+          type: boolean
+        ride_updates:
+          type: boolean
+        payment_notifications:
+          type: boolean
+        promotional_messages:
+          type: boolean
+        security_alerts:
+          type: boolean
+        quiet_hours_start:
+          type: string
+          format: time
+          nullable: true
+        quiet_hours_end:
+          type: string
+          format: time
+          nullable: true
+    PatchedNotificationTemplateRequest:
+      type: object
+      description: Serializer for notification templates
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        notification_type:
+          $ref: '#/components/schemas/NotificationTypeEnum'
+        subject_template:
+          type: string
+          maxLength: 200
+        body_template:
+          type: string
+          minLength: 1
+        is_active:
+          type: boolean
+    PatchedRTDALicenseRequest:
+      type: object
+      description: Serializer for RTDA licenses
+      properties:
+        license_number:
+          type: string
+          minLength: 1
+          maxLength: 50
+        license_type:
+          $ref: '#/components/schemas/LicenseTypeEnum'
+        holder:
+          type: string
+          format: uuid
+        issued_date:
+          type: string
+          format: date-time
+        expiry_date:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/RTDALicenseStatusEnum'
+        vehicle_plate_number:
+          type: string
+          maxLength: 20
+        vehicle_make:
+          type: string
+          maxLength: 50
+        vehicle_model:
+          type: string
+          maxLength: 50
+        vehicle_year:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        last_inspection_date:
+          type: string
+          format: date-time
+          nullable: true
+        next_inspection_due:
+          type: string
+          format: date-time
+          nullable: true
+        compliance_score:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: Score out of 100
+        license_document_url:
+          type: string
+          format: uri
+          maxLength: 200
+        insurance_document_url:
+          type: string
+          format: uri
+          maxLength: 200
+        issued_by:
+          type: string
+          minLength: 1
+          maxLength: 100
+        notes:
+          type: string
+    PatchedRideStatusUpdateRequest:
+      type: object
+      description: Update ride status
+      properties:
+        status:
+          $ref: '#/components/schemas/Status493Enum'
+        reason:
+          type: string
+          writeOnly: true
+          minLength: 1
+    PatchedUserProfileRequest:
+      type: object
+      description: User profile serializer for viewing and updating
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        last_name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        middle_name:
+          type: string
+          maxLength: 150
+        phone_number:
+          type: string
+          minLength: 1
+          maxLength: 15
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        gender:
+          oneOf:
+          - $ref: '#/components/schemas/GenderEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        province:
+          type: string
+          maxLength: 100
+        district:
+          type: string
+          maxLength: 100
+        sector:
+          type: string
+          maxLength: 100
+        cell:
+          type: string
+          maxLength: 100
+        village:
+          type: string
+          maxLength: 100
+        profile_picture:
+          type: string
+          format: binary
+          nullable: true
+        language_preference:
+          $ref: '#/components/schemas/LanguagePreferenceEnum'
+    PaymentMethodEnum:
+      enum:
+      - cash
+      - mtn_momo
+      - airtel_money
+      - card
+      type: string
+      description: |-
+        * `cash` - Cash
+        * `mtn_momo` - MTN Mobile Money
+        * `airtel_money` - Airtel Money
+        * `card` - Credit/Debit Card
+    PaymentStatusEnum:
+      enum:
+      - pending
+      - processing
+      - completed
+      - failed
+      - refunded
+      type: string
+      description: |-
+        * `pending` - Payment Pending
+        * `processing` - Payment Processing
+        * `completed` - Payment Completed
+        * `failed` - Payment Failed
+        * `refunded` - Payment Refunded
+    PriorityEnum:
+      enum:
+      - low
+      - medium
+      - high
+      - urgent
+      type: string
+      description: |-
+        * `low` - Low
+        * `medium` - Medium
+        * `high` - High
+        * `urgent` - Urgent
+    RTDALicense:
+      type: object
+      description: Serializer for RTDA licenses
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        license_number:
+          type: string
+          maxLength: 50
+        license_type:
+          $ref: '#/components/schemas/LicenseTypeEnum'
+        holder:
+          type: string
+          format: uuid
+        holder_name:
+          type: string
+          readOnly: true
+        holder_email:
+          type: string
+          format: email
+          readOnly: true
+        issued_date:
+          type: string
+          format: date-time
+        expiry_date:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/RTDALicenseStatusEnum'
+        vehicle_plate_number:
+          type: string
+          maxLength: 20
+        vehicle_make:
+          type: string
+          maxLength: 50
+        vehicle_model:
+          type: string
+          maxLength: 50
+        vehicle_year:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        last_inspection_date:
+          type: string
+          format: date-time
+          nullable: true
+        next_inspection_due:
+          type: string
+          format: date-time
+          nullable: true
+        compliance_score:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: Score out of 100
+        license_document_url:
+          type: string
+          format: uri
+          maxLength: 200
+        insurance_document_url:
+          type: string
+          format: uri
+          maxLength: 200
+        issued_by:
+          type: string
+          maxLength: 100
+        notes:
+          type: string
+        is_expired:
+          type: boolean
+          readOnly: true
+        days_until_expiry:
+          type: integer
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - days_until_expiry
+      - expiry_date
+      - holder
+      - holder_email
+      - holder_name
+      - id
+      - is_expired
+      - issued_date
+      - license_number
+      - license_type
+      - updated_at
+    RTDALicenseRequest:
+      type: object
+      description: Serializer for RTDA licenses
+      properties:
+        license_number:
+          type: string
+          minLength: 1
+          maxLength: 50
+        license_type:
+          $ref: '#/components/schemas/LicenseTypeEnum'
+        holder:
+          type: string
+          format: uuid
+        issued_date:
+          type: string
+          format: date-time
+        expiry_date:
+          type: string
+          format: date-time
+        status:
+          $ref: '#/components/schemas/RTDALicenseStatusEnum'
+        vehicle_plate_number:
+          type: string
+          maxLength: 20
+        vehicle_make:
+          type: string
+          maxLength: 50
+        vehicle_model:
+          type: string
+          maxLength: 50
+        vehicle_year:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        last_inspection_date:
+          type: string
+          format: date-time
+          nullable: true
+        next_inspection_due:
+          type: string
+          format: date-time
+          nullable: true
+        compliance_score:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          description: Score out of 100
+        license_document_url:
+          type: string
+          format: uri
+          maxLength: 200
+        insurance_document_url:
+          type: string
+          format: uri
+          maxLength: 200
+        issued_by:
+          type: string
+          minLength: 1
+          maxLength: 100
+        notes:
+          type: string
+      required:
+      - expiry_date
+      - holder
+      - issued_date
+      - license_number
+      - license_type
+    RTDALicenseStatusEnum:
+      enum:
+      - active
+      - suspended
+      - expired
+      - revoked
+      - pending
+      type: string
+      description: |-
+        * `active` - Active
+        * `suspended` - Suspended
+        * `expired` - Expired
+        * `revoked` - Revoked
+        * `pending` - Pending Approval
+    ReportGenerationReportTypeEnum:
+      enum:
+      - ride_summary
+      - revenue_report
+      - driver_performance
+      - popular_routes
+      - customer_insights
+      - time_patterns
+      type: string
+      description: |-
+        * `ride_summary` - Ride Summary
+        * `revenue_report` - Revenue Report
+        * `driver_performance` - Driver Performance
+        * `popular_routes` - Popular Routes
+        * `customer_insights` - Customer Insights
+        * `time_patterns` - Time Patterns
+    ReportGenerationRequest:
+      type: object
+      description: Serializer for report generation requests
+      properties:
+        report_type:
+          $ref: '#/components/schemas/ReportGenerationReportTypeEnum'
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+        title:
+          type: string
+          minLength: 1
+          description: Optional custom title for the report
+          maxLength: 200
+      required:
+      - end_date
+      - report_type
+      - start_date
+    Ride:
+      type: object
+      description: Full ride details serializer
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        customer:
+          allOf:
+          - $ref: '#/components/schemas/UserProfile'
+          readOnly: true
+        driver:
+          allOf:
+          - $ref: '#/components/schemas/UserProfile'
+          readOnly: true
+        duration_minutes:
+          type: string
+          readOnly: true
+        is_active:
+          type: string
+          readOnly: true
+        ride_type:
+          $ref: '#/components/schemas/RideTypeEnum'
+        status:
+          $ref: '#/components/schemas/Status493Enum'
+        pickup_latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,8})?$
+        pickup_longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,8})?$
+        pickup_address:
+          type: string
+        pickup_landmark:
+          type: string
+          maxLength: 200
+        destination_latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,8})?$
+        destination_longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,8})?$
+        destination_address:
+          type: string
+        destination_landmark:
+          type: string
+          maxLength: 200
+        pickup_province:
+          type: string
+          maxLength: 100
+        pickup_district:
+          type: string
+          maxLength: 100
+        pickup_sector:
+          type: string
+          maxLength: 100
+        destination_province:
+          type: string
+          maxLength: 100
+        destination_district:
+          type: string
+          maxLength: 100
+        destination_sector:
+          type: string
+          maxLength: 100
+        estimated_distance:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        actual_distance:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+          nullable: true
+        estimated_duration:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        actual_duration:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+          nullable: true
+        base_fare:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        distance_fare:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        time_fare:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        surge_multiplier:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,2})?$
+        total_fare:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        payment_method:
+          $ref: '#/components/schemas/PaymentMethodEnum'
+        payment_status:
+          $ref: '#/components/schemas/PaymentStatusEnum'
+        customer_notes:
+          type: string
+        driver_notes:
+          type: string
+        special_requirements:
+          type: string
+          maxLength: 500
+        customer_rating:
+          type: integer
+          maximum: 5
+          minimum: 1
+          nullable: true
+        driver_rating:
+          type: integer
+          maximum: 5
+          minimum: 1
+          nullable: true
+        customer_feedback:
+          type: string
+        driver_feedback:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        driver_assigned_at:
+          type: string
+          format: date-time
+          nullable: true
+        driver_arrived_at:
+          type: string
+          format: date-time
+          nullable: true
+        ride_started_at:
+          type: string
+          format: date-time
+          nullable: true
+        ride_ended_at:
+          type: string
+          format: date-time
+          nullable: true
+        cancelled_at:
+          type: string
+          format: date-time
+          nullable: true
+        cancellation_reason:
+          type: string
+          maxLength: 500
+        cancellation_fee:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+      required:
+      - base_fare
+      - created_at
+      - customer
+      - destination_address
+      - destination_latitude
+      - destination_longitude
+      - distance_fare
+      - driver
+      - duration_minutes
+      - estimated_distance
+      - estimated_duration
+      - id
+      - is_active
+      - payment_method
+      - pickup_address
+      - pickup_latitude
+      - pickup_longitude
+      - total_fare
+      - updated_at
+    RideCreate:
+      type: object
+      description: Create new ride booking
+      properties:
+        ride_type:
+          $ref: '#/components/schemas/RideTypeEnum'
+        pickup_latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,8})?$
+        pickup_longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,8})?$
+        pickup_address:
+          type: string
+        pickup_landmark:
+          type: string
+          maxLength: 200
+        destination_latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,8})?$
+        destination_longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,8})?$
+        destination_address:
+          type: string
+        destination_landmark:
+          type: string
+          maxLength: 200
+        payment_method:
+          $ref: '#/components/schemas/PaymentMethodEnum'
+        customer_notes:
+          type: string
+        special_requirements:
+          type: string
+          maxLength: 500
+      required:
+      - destination_address
+      - destination_latitude
+      - destination_longitude
+      - payment_method
+      - pickup_address
+      - pickup_latitude
+      - pickup_longitude
+    RideCreateRequest:
+      type: object
+      description: Create new ride booking
+      properties:
+        ride_type:
+          $ref: '#/components/schemas/RideTypeEnum'
+        pickup_latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,8})?$
+        pickup_longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,8})?$
+        pickup_address:
+          type: string
+          minLength: 1
+        pickup_landmark:
+          type: string
+          maxLength: 200
+        destination_latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,8})?$
+        destination_longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,8})?$
+        destination_address:
+          type: string
+          minLength: 1
+        destination_landmark:
+          type: string
+          maxLength: 200
+        payment_method:
+          $ref: '#/components/schemas/PaymentMethodEnum'
+        customer_notes:
+          type: string
+        special_requirements:
+          type: string
+          maxLength: 500
+      required:
+      - destination_address
+      - destination_latitude
+      - destination_longitude
+      - payment_method
+      - pickup_address
+      - pickup_latitude
+      - pickup_longitude
+    RideList:
+      type: object
+      description: Simplified ride list serializer
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/Status493Enum'
+        ride_type:
+          $ref: '#/components/schemas/RideTypeEnum'
+        customer_name:
+          type: string
+          readOnly: true
+        driver_name:
+          type: string
+          readOnly: true
+        pickup_address:
+          type: string
+        destination_address:
+          type: string
+        total_fare:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        payment_method:
+          $ref: '#/components/schemas/PaymentMethodEnum'
+        payment_status:
+          $ref: '#/components/schemas/PaymentStatusEnum'
+        estimated_duration:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        duration_minutes:
+          type: string
+          readOnly: true
+        is_active:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - customer_name
+      - destination_address
+      - driver_name
+      - duration_minutes
+      - estimated_duration
+      - id
+      - is_active
+      - payment_method
+      - pickup_address
+      - total_fare
+      - updated_at
+    RideStatusUpdate:
+      type: object
+      description: Update ride status
+      properties:
+        status:
+          $ref: '#/components/schemas/Status493Enum'
+    RideStatusUpdateRequest:
+      type: object
+      description: Update ride status
+      properties:
+        status:
+          $ref: '#/components/schemas/Status493Enum'
+        reason:
+          type: string
+          writeOnly: true
+          minLength: 1
+    RideTypeEnum:
+      enum:
+      - boda
+      - car
+      - delivery
+      - express
+      type: string
+      description: |-
+        * `boda` - Motorcycle Ride
+        * `car` - Car Ride
+        * `delivery` - Package Delivery
+        * `express` - Express Delivery
+    RoleEnum:
+      enum:
+      - customer
+      - driver
+      - admin
+      - government
+      type: string
+      description: |-
+        * `customer` - Customer
+        * `driver` - Driver
+        * `admin` - Admin
+        * `government` - Government Official
+    SafetyIncident:
+      type: object
+      description: Serializer for safety incidents
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        incident_type:
+          $ref: '#/components/schemas/IncidentTypeEnum'
+        severity:
+          $ref: '#/components/schemas/SeverityEnum'
+        status:
+          $ref: '#/components/schemas/SafetyIncidentStatusEnum'
+        driver:
+          type: string
+          format: uuid
+          nullable: true
+        driver_name:
+          type: string
+          readOnly: true
+        customer:
+          type: string
+          format: uuid
+          nullable: true
+        customer_name:
+          type: string
+          readOnly: true
+        ride:
+          type: string
+          format: uuid
+          nullable: true
+        description:
+          type: string
+        location_latitude:
+          type: number
+          format: double
+          nullable: true
+        location_longitude:
+          type: number
+          format: double
+          nullable: true
+        location_address:
+          type: string
+          maxLength: 300
+        incident_datetime:
+          type: string
+          format: date-time
+        reported_datetime:
+          type: string
+          format: date-time
+          readOnly: true
+        resolved_datetime:
+          type: string
+          format: date-time
+          nullable: true
+        emergency_services_contacted:
+          type: boolean
+        emergency_service_type:
+          type: string
+          maxLength: 20
+        police_report_number:
+          type: string
+          maxLength: 50
+        resolution_notes:
+          type: string
+        actions_taken: {}
+        reported_to_government:
+          type: boolean
+        government_case_number:
+          type: string
+          maxLength: 50
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - customer_name
+      - description
+      - driver_name
+      - id
+      - incident_datetime
+      - incident_type
+      - reported_datetime
+      - severity
+      - updated_at
+    SafetyIncidentRequest:
+      type: object
+      description: Serializer for safety incidents
+      properties:
+        incident_type:
+          $ref: '#/components/schemas/IncidentTypeEnum'
+        severity:
+          $ref: '#/components/schemas/SeverityEnum'
+        status:
+          $ref: '#/components/schemas/SafetyIncidentStatusEnum'
+        driver:
+          type: string
+          format: uuid
+          nullable: true
+        customer:
+          type: string
+          format: uuid
+          nullable: true
+        ride:
+          type: string
+          format: uuid
+          nullable: true
+        description:
+          type: string
+          minLength: 1
+        location_latitude:
+          type: number
+          format: double
+          nullable: true
+        location_longitude:
+          type: number
+          format: double
+          nullable: true
+        location_address:
+          type: string
+          maxLength: 300
+        incident_datetime:
+          type: string
+          format: date-time
+        resolved_datetime:
+          type: string
+          format: date-time
+          nullable: true
+        emergency_services_contacted:
+          type: boolean
+        emergency_service_type:
+          type: string
+          maxLength: 20
+        police_report_number:
+          type: string
+          maxLength: 50
+        resolution_notes:
+          type: string
+        actions_taken: {}
+        reported_to_government:
+          type: boolean
+        government_case_number:
+          type: string
+          maxLength: 50
+      required:
+      - description
+      - incident_datetime
+      - incident_type
+      - severity
+    SafetyIncidentStatusEnum:
+      enum:
+      - reported
+      - investigating
+      - resolved
+      - closed
+      - escalated
+      type: string
+      description: |-
+        * `reported` - Reported
+        * `investigating` - Under Investigation
+        * `resolved` - Resolved
+        * `closed` - Closed
+        * `escalated` - Escalated to Authorities
+    SeverityEnum:
+      enum:
+      - low
+      - medium
+      - high
+      - critical
+      type: string
+      description: |-
+        * `low` - Low - Minor Issue
+        * `medium` - Medium - Requires Attention
+        * `high` - High - Serious Incident
+        * `critical` - Critical - Emergency Response
+    Status493Enum:
+      enum:
+      - requested
+      - driver_assigned
+      - driver_arrived
+      - in_progress
+      - completed
+      - cancelled_by_customer
+      - cancelled_by_driver
+      - cancelled_by_system
+      - no_driver_found
+      type: string
+      description: |-
+        * `requested` - Ride Requested
+        * `driver_assigned` - Driver Assigned
+        * `driver_arrived` - Driver Arrived
+        * `in_progress` - Ride in Progress
+        * `completed` - Ride Completed
+        * `cancelled_by_customer` - Cancelled by Customer
+        * `cancelled_by_driver` - Cancelled by Driver
+        * `cancelled_by_system` - Cancelled by System
+        * `no_driver_found` - No Driver Found
+    TaxRecord:
+      type: object
+      description: Serializer for tax records
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        tax_type:
+          $ref: '#/components/schemas/TaxTypeEnum'
+        tax_period_start:
+          type: string
+          format: date-time
+        tax_period_end:
+          type: string
+          format: date-time
+        taxpayer:
+          type: string
+          format: uuid
+        taxpayer_name:
+          type: string
+          readOnly: true
+        taxpayer_email:
+          type: string
+          format: email
+          readOnly: true
+        taxable_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,13}(?:\.\d{0,2})?$
+        tax_rate_percent:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        tax_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,13}(?:\.\d{0,2})?$
+        ride:
+          type: string
+          format: uuid
+          nullable: true
+        status:
+          $ref: '#/components/schemas/TaxRecordStatusEnum'
+        collected_at:
+          type: string
+          format: date-time
+          nullable: true
+        paid_to_government_at:
+          type: string
+          format: date-time
+          nullable: true
+        government_receipt_number:
+          type: string
+          maxLength: 100
+        government_transaction_id:
+          type: string
+          maxLength: 100
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - tax_amount
+      - tax_period_end
+      - tax_period_start
+      - tax_rate_percent
+      - tax_type
+      - taxable_amount
+      - taxpayer
+      - taxpayer_email
+      - taxpayer_name
+      - updated_at
+    TaxRecordStatusEnum:
+      enum:
+      - calculated
+      - collected
+      - paid_to_government
+      - disputed
+      - refunded
+      type: string
+      description: |-
+        * `calculated` - Calculated
+        * `collected` - Collected
+        * `paid_to_government` - Paid to Government
+        * `disputed` - Disputed
+        * `refunded` - Refunded
+    TaxTypeEnum:
+      enum:
+      - ride_tax
+      - driver_license_fee
+      - vehicle_registration
+      - income_tax
+      - platform_tax
+      type: string
+      description: |-
+        * `ride_tax` - Per-Ride Tax
+        * `driver_license_fee` - Driver License Fee
+        * `vehicle_registration` - Vehicle Registration Tax
+        * `income_tax` - Driver Income Tax
+        * `platform_tax` - Platform Operation Tax
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+      required:
+      - access
+      - refresh
+    TokenRefreshRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          minLength: 1
+      required:
+      - refresh
+    UserLoginRequest:
+      type: object
+      description: Enhanced JWT login with user details
+      properties:
+        email:
+          type: string
+          writeOnly: true
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - email
+      - password
+    UserProfile:
+      type: object
+      description: User profile serializer for viewing and updating
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+          title: Email address
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        full_name:
+          type: string
+          readOnly: true
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        middle_name:
+          type: string
+          maxLength: 150
+        phone_number:
+          type: string
+          maxLength: 15
+        national_id:
+          type: string
+          readOnly: true
+          description: Rwanda National ID (16 digits)
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        gender:
+          oneOf:
+          - $ref: '#/components/schemas/GenderEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        province:
+          type: string
+          maxLength: 100
+        district:
+          type: string
+          maxLength: 100
+        sector:
+          type: string
+          maxLength: 100
+        cell:
+          type: string
+          maxLength: 100
+        village:
+          type: string
+          maxLength: 100
+        rwanda_address:
+          type: string
+          readOnly: true
+        profile_picture:
+          type: string
+          format: uri
+          nullable: true
+        language_preference:
+          $ref: '#/components/schemas/LanguagePreferenceEnum'
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          readOnly: true
+        is_verified:
+          type: boolean
+          readOnly: true
+        is_phone_verified:
+          type: boolean
+          readOnly: true
+        is_email_verified:
+          type: boolean
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        last_login:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - created_at
+      - email
+      - first_name
+      - full_name
+      - id
+      - is_email_verified
+      - is_phone_verified
+      - is_verified
+      - last_login
+      - last_name
+      - national_id
+      - phone_number
+      - role
+      - rwanda_address
+      - username
+    UserProfileRequest:
+      type: object
+      description: User profile serializer for viewing and updating
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        last_name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        middle_name:
+          type: string
+          maxLength: 150
+        phone_number:
+          type: string
+          minLength: 1
+          maxLength: 15
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        gender:
+          oneOf:
+          - $ref: '#/components/schemas/GenderEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        province:
+          type: string
+          maxLength: 100
+        district:
+          type: string
+          maxLength: 100
+        sector:
+          type: string
+          maxLength: 100
+        cell:
+          type: string
+          maxLength: 100
+        village:
+          type: string
+          maxLength: 100
+        profile_picture:
+          type: string
+          format: binary
+          nullable: true
+        language_preference:
+          $ref: '#/components/schemas/LanguagePreferenceEnum'
+      required:
+      - first_name
+      - last_name
+      - phone_number
+      - username
+    UserRegistration:
+      type: object
+      description: User registration with Rwanda-specific validations
+      properties:
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        phone_number:
+          type: string
+          maxLength: 15
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        middle_name:
+          type: string
+          maxLength: 150
+        national_id:
+          type: string
+          description: Rwanda National ID (16 digits)
+          pattern: ^\d{16}$
+          maxLength: 16
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        gender:
+          oneOf:
+          - $ref: '#/components/schemas/GenderEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        province:
+          type: string
+          maxLength: 100
+        district:
+          type: string
+          maxLength: 100
+        sector:
+          type: string
+          maxLength: 100
+        cell:
+          type: string
+          maxLength: 100
+        village:
+          type: string
+          maxLength: 100
+        language_preference:
+          $ref: '#/components/schemas/LanguagePreferenceEnum'
+      required:
+      - email
+      - first_name
+      - last_name
+      - national_id
+      - phone_number
+      - role
+      - username
+    UserRegistrationRequest:
+      type: object
+      description: User registration with Rwanda-specific validations
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+          title: Email address
+          maxLength: 254
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+        password_confirm:
+          type: string
+          writeOnly: true
+          minLength: 1
+        phone_number:
+          type: string
+          minLength: 1
+          maxLength: 15
+        first_name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        last_name:
+          type: string
+          minLength: 1
+          maxLength: 150
+        middle_name:
+          type: string
+          maxLength: 150
+        national_id:
+          type: string
+          minLength: 1
+          description: Rwanda National ID (16 digits)
+          pattern: ^\d{16}$
+          maxLength: 16
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        gender:
+          oneOf:
+          - $ref: '#/components/schemas/GenderEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        province:
+          type: string
+          maxLength: 100
+        district:
+          type: string
+          maxLength: 100
+        sector:
+          type: string
+          maxLength: 100
+        cell:
+          type: string
+          maxLength: 100
+        village:
+          type: string
+          maxLength: 100
+        language_preference:
+          $ref: '#/components/schemas/LanguagePreferenceEnum'
+      required:
+      - email
+      - first_name
+      - last_name
+      - national_id
+      - password
+      - password_confirm
+      - phone_number
+      - role
+      - username
+    VehicleTypeEnum:
+      enum:
+      - motorcycle
+      - car
+      - bicycle
+      type: string
+      description: |-
+        * `motorcycle` - Motorcycle
+        * `car` - Car
+        * `bicycle` - Bicycle
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
